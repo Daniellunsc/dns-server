@@ -1,8 +1,7 @@
-
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
 public class DNSMessage {
+  private DNS dns;
   private short id;
   private short flags;
   private short qdcount;
@@ -11,14 +10,14 @@ public class DNSMessage {
   private short nscount;
   private short arcount;
 
-  public DNSMessage() {}
-  public DNSMessage(short id, short flags, short qdcount, short ancount, short nscount, short arcount) {
+  public DNSMessage(short id, short flags, short qdcount, short ancount, short nscount, short arcount, DNS dns) {
     this.id = id;
     this.flags = flags;
     this.qdcount = qdcount;
     this.ancount = ancount;
     this.nscount = nscount;
     this.arcount = arcount;
+    this.dns = dns;
   }
 
   private ByteBuffer writeHeader(ByteBuffer buffer) {
@@ -32,14 +31,14 @@ public class DNSMessage {
   }
 
   private ByteBuffer writeQuestion(ByteBuffer buffer) {
-    buffer.put(encodeDomainName("codecrafters.io"));
+    buffer.put(DNSParser.encodeDomainName(this.dns));
     buffer.putShort((short)1);
     buffer.putShort((short)1);
     return buffer;
   }
 
   private ByteBuffer writeAnswer(ByteBuffer buffer) {
-    buffer.put(encodeDomainName("codecrafters.io"));
+    buffer.put(DNSParser.encodeDomainName(this.dns));
     buffer.putShort((short)1);
     buffer.putShort((short)1);
     buffer.putInt(300);
@@ -48,18 +47,6 @@ public class DNSMessage {
     return buffer;
   }
 
-  private byte[] encodeDomainName(String domain) {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-    for (String label : domain.split("\\.")) {
-      out.write(label.length());
-      out.writeBytes(label.getBytes());
-    }
-
-    out.write(0);
-
-    return out.toByteArray();
-  }
   public byte[] array() {
     ByteBuffer byteBuffer = ByteBuffer.allocate(512);
     writeHeader(byteBuffer);
