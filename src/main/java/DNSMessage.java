@@ -1,16 +1,26 @@
+
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
 public class DNSMessage {
-  public short id = 1234;
-  public short flags = (short)0b10000000_00000000;
-  public short qdcount = 1;
+  private short id;
+  private short flags;
+  private short qdcount;
 
-  public short ancount = 1;
-  public short nscount;
-  public short arcount;
+  private short ancount;
+  private short nscount;
+  private short arcount;
 
   public DNSMessage() {}
+  public DNSMessage(short id, short flags, short qdcount, short ancount, short nscount, short arcount) {
+    this.id = id;
+    this.flags = flags;
+    this.qdcount = qdcount;
+    this.ancount = ancount;
+    this.nscount = nscount;
+    this.arcount = arcount;
+  }
+
   private ByteBuffer writeHeader(ByteBuffer buffer) {
     buffer.putShort(id);
     buffer.putShort(flags);
