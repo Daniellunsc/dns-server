@@ -15,7 +15,6 @@ public class Main {
         System.out.println("Received data, parsing...");
         DNSMessageParser dnsParser = new DNSMessageParser();
         
-    
         final byte[] bufResponse = dnsParser.parsePacket(packet).array();
         final DatagramPacket packetResponse = new DatagramPacket(bufResponse, bufResponse.length, packet.getSocketAddress());
         serverSocket.send(packetResponse);
